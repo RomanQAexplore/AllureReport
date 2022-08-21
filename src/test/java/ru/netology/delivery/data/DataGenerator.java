@@ -1,61 +1,53 @@
 package ru.netology.delivery.data;
 
-import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.SelenideElement;
 import com.github.javafaker.Faker;
 import lombok.Value;
-import org.openqa.selenium.Keys;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 
 public class DataGenerator {
     private DataGenerator() {
+
     }
 
-    public static String generateDate(int shift) {
+    static Faker faker = new Faker((new Locale("ru")));
+
+    public static String generateDate(int daysToAdd) {
         // TODO: добавить логику для объявления переменной date и задания её значения, для генерации строки с датой
         // Вы можете использовать класс LocalDate и его методы для получения и форматирования даты
-        String date = LocalDate.now().plusDays(shift).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-        return date;
+        return LocalDate.now().plusDays(daysToAdd).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
     public static String generateCity(String locale) {
+        String[] ArrayOfCities = {"Москва", "Санкт-Петербург", "Орёл", "Петропавловск-Камчатский", "Ростов-на-Дону", "Ханты-Мансийск",
+                "Горно-Алтайск", "Йошкар-Ола", "Южно-Сахалинск", "Нижний Новгород", "Нарьян-Мар", "Великий Новгород", "Улан-Удэ",
+                "Южно-Сахалинск", "Тюмень", "Екатеринбург", "Челябинск", "Пермь", "Омск", "Томск", "Барнаул", "Владивосток",
+                };
+
+        Random random = new Random();
+        int i = random.nextInt(ArrayOfCities.length);
+
         // TODO: добавить логику для объявления переменной city и задания её значения, генерацию можно выполнить
         // с помощью Faker, либо используя массив валидных городов и класс Random
-        $("[data-test-id=city] input").setValue("ва");
-        ElementsCollection cities = $$(".menu-item__control");
-        List<String> towns = new ArrayList<>();
-        for (SelenideElement element : cities) {
-            towns.add(element.getText());
-        }
-        $("[data-test-id=city] input").doubleClick().sendKeys(Keys.BACK_SPACE);
-        ;
-        Random random = new Random();
-        String city = towns.get(random.nextInt(towns.size() - 1));
-        return city;
+        return ArrayOfCities[i];
     }
 
     public static String generateName(String locale) {
         // TODO: добавить логику для объявления переменной name и задания её значения, для генерации можно
         // использовать Faker
-        Faker faker = new Faker(new Locale(locale));
-        String name = faker.name().fullName();
-        return name;
+        return faker.name().fullName();
     }
+
 
     public static String generatePhone(String locale) {
         // TODO: добавить логику для объявления переменной phone и задания её значения, для генерации можно
         // использовать Faker
         Faker faker = new Faker(new Locale(locale));
-        String phone = faker.phoneNumber().phoneNumber();
+        String phone = faker.numerify("+7##########");
         return phone;
     }
 
@@ -66,8 +58,12 @@ public class DataGenerator {
         public static UserInfo generateUser(String locale) {
             // TODO: добавить логику для создания пользователя user с использованием методов generateCity(locale),
             // generateName(locale), generatePhone(locale)
-            UserInfo user = new UserInfo(generateCity(locale), generateName(locale), generatePhone(locale));
-            return user;
+
+            return new UserInfo(
+                    generateCity("ru"),
+                    generateName("ru"),
+                    generatePhone("ru")
+            );
         }
     }
 
@@ -78,4 +74,3 @@ public class DataGenerator {
         String phone;
     }
 }
-
